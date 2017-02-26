@@ -144,18 +144,22 @@ Background.prototype.update = function () {
 // }
 
 // inheritance
-function Megaman(game, spritesheet, jumpSpritesheet, fallingSpritesheet, swordSpritesheet) {
+function Megaman(game, spritesheet, jumpSpritesheet, fallingSpritesheet, swordSpritesheet, entranceSpritesheet, beamEntranceSpritesheet) {
     this.animation = new Animation(spritesheet, 36, 36, 11, 0.08, 11, true, 2.5);
     this.jumpAnimation = new Animation(jumpSpritesheet, 32, 49, 3, 0.18, 3, false, 2.5);
     this.fallingAnimation = new Animation(fallingSpritesheet, 32, 49, 4, 0.18, 4, true, 2.5);
     this.swordAnimation = new Animation(swordSpritesheet, 69, 58, 11, 0.05 ,11, false, 2.5);
+    this.entranceAnimation = new Animation (entranceSpritesheet, 35, 45, 9, 0.18, 9, false, 2.5);
+    this.beamAnimation = new Animation (beamEntranceSpritesheet, 13, 50, 1, 0.18, 1, true, 2.5);
     this.speed = 200;
     this.ctx = game.ctx;
     this.jumping = false;
     this.falling = false;
     this.attacking = false;
+    this.entrance = false;
+    this.beamEntrance = true;
     this.jumpHeight = 200;
-    Entity.call(this, game, 0, 200);
+    Entity.call(this, game, 0, 0);
 }
 
 Megaman.prototype = new Entity();
@@ -163,7 +167,14 @@ Megaman.prototype.constructor = Megaman;
 
 Megaman.prototype.update = function () {
     //console.log(this.y);
-    if (!this.attacking) {
+    if (this.beamEntrance) {
+       this.y += this.game.clockTick * this.speed + 5;
+       if (this.y > 200) {
+           this.beamEntrance = false;
+           this.entrance = true;
+       }
+    }
+    if (!this.attacking && !this.entrance && !this.beamEntrance) {
         console.log(1);
         this.x += this.game.clockTick * this.speed;
     }
@@ -205,6 +216,9 @@ Megaman.prototype.draw = function () {
             this.jumping = false;
             this.falling = true;
         }
+    } else if (this.beamEntrance) {
+        this.beamAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+
     } else if (this.falling) {
         this.fallingAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25);
         if (this.y >= 200) {
@@ -219,6 +233,14 @@ Megaman.prototype.draw = function () {
             this.attacking = false;
             this.y = 200;
         }
+    } else if(this.entrance) {
+        this.y = 175;
+        this.entranceAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        if (this.entranceAnimation.isDone()) {
+            this.entranceAnimation.elapsedTime = 0;
+            this.entrance = false;
+            this.y = 200;
+        }
     } else if (!this.falling && !this.jumping) {
         this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
@@ -231,6 +253,8 @@ Megaman.prototype.draw = function () {
 // AM.queueDownload("./img/runningcat.png");
 // AM.queueDownload("./img/MarioWalking.png");
 AM.queueDownload("./img/MegamanBackground.jpg");
+AM.queueDownload("./img/MegaEntrance0.png");
+AM.queueDownload("./img/MegamanEntrance.png");
 AM.queueDownload("./img/MegamanRunning.png");
 AM.queueDownload("./img/MegamanJumping.png");
 AM.queueDownload("./img/MegamanFalling.png");
@@ -245,13 +269,9 @@ AM.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
 
-    // gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/background.jpg")));
     gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/MegamanBackground.jpg")));
-    // gameEngine.addEntity(new MushroomDude(gameEngine, AM.getAsset("./img/mushroomdude.png")));
-    // gameEngine.addEntity(new Cheetah(gameEngine, AM.getAsset("./img/runningcat.png")));
-    // gameEngine.addEntity(new Guy(gameEngine, AM.getAsset("./img/guy.jpg")));
     gameEngine.addEntity(new Megaman(gameEngine, AM.getAsset("./img/MegamanRunning.png"),
         AM.getAsset("./img/MegamanJumping.png"), AM.getAsset("./img/MegamanFalling.png"),
-        AM.getAsset("./img/MegamanSword.png")));
+        AM.getAsset("./img/MegamanSword.png"), AM.getAsset("./img/MegamanEntrance.png"), AM.getAsset("./img/MegaEntrance0.png")));
     console.log("All Done!");
 });
