@@ -57,99 +57,185 @@ Background.prototype.draw = function () {
 Background.prototype.update = function () {
 };
 
-function MushroomDude(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 189, 230, 5, 0.10, 14, true, 1);
-    this.x = 0;
-    this.y = 0;
-    this.speed = 100;
-    this.game = game;
-    this.ctx = game.ctx;
-}
+// function MushroomDude(game, spritesheet) {
+//     this.animation = new Animation(spritesheet, 189, 230, 5, 0.10, 14, true, 1);
+//     this.x = 0;
+//     this.y = 0;
+//     this.speed = 100;
+//     this.game = game;
+//     this.ctx = game.ctx;
+// }
+//
+// MushroomDude.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+// }
+//
+// MushroomDude.prototype.update = function () {
+//     if (this.animation.elapsedTime < this.animation.totalTime * 8 / 14)
+//         this.x += this.game.clockTick * this.speed;
+//     if (this.x > 800) this.x = -230;
+// }
+//
+//
+// // inheritance
+// function Cheetah(game, spritesheet) {
+//     this.animation = new Animation(spritesheet, 512, 256, 2, 0.05, 8, true, 0.5);
+//     this.speed = 350;
+//     this.ctx = game.ctx;
+//     Entity.call(this, game, 0, 250);
+// }
+//
+// Cheetah.prototype = new Entity();
+// Cheetah.prototype.constructor = Cheetah;
+//
+// Cheetah.prototype.update = function () {
+//     this.x += this.game.clockTick * this.speed;
+//     if (this.x > 800) this.x = -230;
+//     Entity.prototype.update.call(this);
+// }
+//
+// Cheetah.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+//     Entity.prototype.draw.call(this);
+// }
+//
+// // inheritance
+// function Guy(game, spritesheet) {
+//     this.animation = new Animation(spritesheet, 154, 215, 4, 0.15, 8, true, 0.5);
+//     this.speed = 100;
+//     this.ctx = game.ctx;
+//     Entity.call(this, game, 0, 450);
+// }
+//
+// Guy.prototype = new Entity();
+// Guy.prototype.constructor = Guy;
+//
+// Guy.prototype.update = function () {
+//     this.x += this.game.clockTick * this.speed;
+//     if (this.x > 800) this.x = -230;
+//     Entity.prototype.update.call(this);
+// }
+//
+// Guy.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+//     Entity.prototype.draw.call(this);
+// }
 
-MushroomDude.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-}
-
-MushroomDude.prototype.update = function () {
-    if (this.animation.elapsedTime < this.animation.totalTime * 8 / 14)
-        this.x += this.game.clockTick * this.speed;
-    if (this.x > 800) this.x = -230;
-}
-
-
-// inheritance 
-function Cheetah(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 512, 256, 2, 0.05, 8, true, 0.5);
-    this.speed = 350;
-    this.ctx = game.ctx;
-    Entity.call(this, game, 0, 250);
-}
-
-Cheetah.prototype = new Entity();
-Cheetah.prototype.constructor = Cheetah;
-
-Cheetah.prototype.update = function () {
-    this.x += this.game.clockTick * this.speed;
-    if (this.x > 800) this.x = -230;
-    Entity.prototype.update.call(this);
-}
-
-Cheetah.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
-
-// inheritance 
-function Guy(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 154, 215, 4, 0.15, 8, true, 0.5);
-    this.speed = 100;
-    this.ctx = game.ctx;
-    Entity.call(this, game, 0, 450);
-}
-
-Guy.prototype = new Entity();
-Guy.prototype.constructor = Guy;
-
-Guy.prototype.update = function () {
-    this.x += this.game.clockTick * this.speed;
-    if (this.x > 800) this.x = -230;
-    Entity.prototype.update.call(this);
-}
-
-Guy.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    Entity.prototype.draw.call(this);
-}
+// // inheritance
+// function Mario(game, spritesheet) {
+//     this.animation = new Animation(spritesheet, 39, 32, 5, 0.10, 5, true, 2.5);
+//     this.speed = 100;
+//     this.ctx = game.ctx;
+//     Entity.call(this, game, 0, 450);
+// }
+//
+// Mario.prototype = new Entity();
+// Mario.prototype.constructor = Mario;
+//
+// Mario.prototype.update = function () {
+//     this.x += this.game.clockTick * this.speed;
+//     if (this.x > 800) this.x = -230;
+//     Entity.prototype.update.call(this);
+// }
+//
+// Mario.prototype.draw = function () {
+//     this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+//     Entity.prototype.draw.call(this);
+// }
 
 // inheritance
-function Mario(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 39, 32, 4, 0.08, 4, true, 2.5);
-    this.speed = 100;
+function Megaman(game, spritesheet, jumpSpritesheet, fallingSpritesheet, swordSpritesheet) {
+    this.animation = new Animation(spritesheet, 36, 36, 11, 0.08, 11, true, 2.5);
+    this.jumpAnimation = new Animation(jumpSpritesheet, 32, 49, 3, 0.18, 3, false, 2.5);
+    this.fallingAnimation = new Animation(fallingSpritesheet, 32, 49, 4, 0.18, 4, true, 2.5);
+    this.swordAnimation = new Animation(swordSpritesheet, 69, 58, 11, 0.05 ,11, false, 2.5);
+    this.speed = 200;
     this.ctx = game.ctx;
-    Entity.call(this, game, 0, 450);
+    this.jumping = false;
+    this.falling = false;
+    this.attacking = false;
+    this.jumpHeight = 200;
+    Entity.call(this, game, 0, 200);
 }
 
-Mario.prototype = new Entity();
-Mario.prototype.constructor = Mario;
+Megaman.prototype = new Entity();
+Megaman.prototype.constructor = Megaman;
 
-Mario.prototype.update = function () {
-    this.x += this.game.clockTick * this.speed;
-    if (this.x > 800) this.x = -230;
+Megaman.prototype.update = function () {
+    //console.log(this.y);
+    if (!this.attacking) {
+        console.log(1);
+        this.x += this.game.clockTick * this.speed;
+    }
+    if (this.x > 910) {
+        this.x = -230;
+    }
+    if (this.x > 200 && this.x < 210) {
+        console.log(2);
+        this.jumping = true;
+        this.base = this.y;
+    }
+    if (this.x > 600 && this.x < 610) {
+        //Entity.call(this, this.game, this.x, this.y);
+        console.log("EREEEE");
+        this.attacking = true;
+    }
+    if (this.jumping) {
+        console.log(3);
+        var height;
+        var duration = this.jumpAnimation.elapsedTime + this.game.clockTick;
+        if (duration > this.jumpAnimation.totalTime / 2) duration = this.jumpAnimation.totalTime - duration;
+        duration = duration / this.jumpAnimation.totalTime;
+
+        height = (2 * duration - 2 * duration * duration) * this.jumpHeight;
+        this.y = this.base - height;
+    }
+    if (this.falling) {
+        console.log(4);
+        this.y += this.game.clockTick / this.jumpAnimation.totalTime * 2 * this.jumpHeight;
+    }
     Entity.prototype.update.call(this);
 }
 
-Mario.prototype.draw = function () {
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+Megaman.prototype.draw = function () {
+    if (this.jumping) {
+        this.jumpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25);
+        if (this.jumpAnimation.isDone()) {
+            this.jumpAnimation.elapsedTime = 0;
+            this.jumping = false;
+            this.falling = true;
+        }
+    } else if (this.falling) {
+        this.fallingAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25);
+        if (this.y >= 200) {
+            this.falling = false;
+        }
+
+    } else if (this.attacking) {
+        this.y = 155;
+        this.swordAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        if (this.swordAnimation.isDone()) {
+            this.swordAnimation.elapsedTime = 0;
+            this.attacking = false;
+            this.y = 200;
+        }
+    } else if (!this.falling && !this.jumping) {
+        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
     Entity.prototype.draw.call(this);
 }
 
-
-AM.queueDownload("./img/RobotUnicorn.png");
-AM.queueDownload("./img/guy.jpg");
-AM.queueDownload("./img/mushroomdude.png");
-AM.queueDownload("./img/runningcat.png");
-AM.queueDownload("./img/MarioWalking.png")
-AM.queueDownload("./img/background.jpg");
+// AM.queueDownload("./img/RobotUnicorn.png");
+// AM.queueDownload("./img/guy.jpg");
+// AM.queueDownload("./img/mushroomdude.png");
+// AM.queueDownload("./img/runningcat.png");
+// AM.queueDownload("./img/MarioWalking.png");
+AM.queueDownload("./img/MegamanBackground.jpg");
+AM.queueDownload("./img/MegamanRunning.png");
+AM.queueDownload("./img/MegamanJumping.png");
+AM.queueDownload("./img/MegamanFalling.png");
+AM.queueDownload("./img/MegamanSword.png");
+//AM.queueDownload("./img/background.jpg");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -159,10 +245,13 @@ AM.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
 
-    gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/background.jpg")));
+    // gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/background.jpg")));
+    gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/MegamanBackground.jpg")));
     // gameEngine.addEntity(new MushroomDude(gameEngine, AM.getAsset("./img/mushroomdude.png")));
     // gameEngine.addEntity(new Cheetah(gameEngine, AM.getAsset("./img/runningcat.png")));
     // gameEngine.addEntity(new Guy(gameEngine, AM.getAsset("./img/guy.jpg")));
-    gameEngine.addEntity(new Mario(gameEngine, AM.getAsset("./img/MarioWalking.png")));
+    gameEngine.addEntity(new Megaman(gameEngine, AM.getAsset("./img/MegamanRunning.png"),
+        AM.getAsset("./img/MegamanJumping.png"), AM.getAsset("./img/MegamanFalling.png"),
+        AM.getAsset("./img/MegamanSword.png")));
     console.log("All Done!");
 });
