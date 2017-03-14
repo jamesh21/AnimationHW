@@ -13,7 +13,7 @@ function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDurati
     this.scale = scale;
 }
 
-Animation.prototype.drawFrame = function (tick, ctx, x, y) {
+Animation.prototype.drawFrame = function (tick, ctx, x, y, otherWay) {
     this.elapsedTime += tick;
     if (this.isDone()) {
         if (this.loop) this.elapsedTime = 0;
@@ -24,6 +24,11 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     xindex = frame % this.sheetWidth;
     yindex = Math.floor(frame / this.sheetWidth);
 
+    if (otherWay) {
+        xindex = this.sheetWidth - 1 - (frame % this.sheetWidth);
+    } else {
+        xindex = frame % this.sheetWidth;
+    }
     ctx.drawImage(this.spriteSheet,
                  xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
                  this.frameWidth, this.frameHeight,
@@ -151,7 +156,10 @@ function Megaman(game, spritesheet, jumpSpritesheet, fallingSpritesheet, swordSp
     this.swordAnimation = new Animation(swordSpritesheet, 69, 58, 11, 0.05 ,11, false, 2.5);
     this.entranceAnimation = new Animation (entranceSpritesheet, 35, 45, 9, 0.18, 9, false, 2.5);
     this.beamAnimation = new Animation (beamEntranceSpritesheet, 13, 50, 1, 0.18, 1, true, 2.5);
+    this.leftAnimation = new Animation (this.flip(spritesheet), 36, 36, 11, 0.08, 11, true, 2.5);
+    this.leftSwordAnimation = new Animation(this.flip(swordSpritesheet), 69, 58, 11, 0.05, 11, false, 2.5);
     this.speed = 200;
+    this.movingOtherway = false;
     this.ctx = game.ctx;
     this.jumping = false;
     this.falling = false;
@@ -174,14 +182,20 @@ Megaman.prototype.update = function () {
            this.entrance = true;
        }
     }
-    if (!this.attacking && !this.entrance && !this.beamEntrance) {
+    if (!this.attacking && !this.entrance && !this.beamEntrance && !this.movingOtherway) {
         console.log(1);
         this.x += this.game.clockTick * this.speed;
     }
     if (this.x > 910) {
         this.x = -230;
     }
-    if (this.x > 200 && this.x < 210) {
+    if (this.x > 800 && this.x < 810) {
+        this.movingOtherway = true;
+    }
+    if (this.movingOtherway) {
+        this.x -= this.game.clockTick * this.speed;
+    }
+    if (this.x > 200 && this.x < 210 && !this.movingOtherway) {
         console.log(2);
         this.jumping = true;
         this.base = this.y;
@@ -210,39 +224,53 @@ Megaman.prototype.update = function () {
 
 Megaman.prototype.draw = function () {
     if (this.jumping) {
-        this.jumpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25);
+        this.jumpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25, false);
         if (this.jumpAnimation.isDone()) {
             this.jumpAnimation.elapsedTime = 0;
             this.jumping = false;
             this.falling = true;
         }
     } else if (this.beamEntrance) {
-        this.beamAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.beamAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y, false);
 
     } else if (this.falling) {
-        this.fallingAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25);
+        this.fallingAnimation.drawFrame(this.game.clockTick, this.ctx, this.x + 25, this.y - 25, false);
         if (this.y >= 200) {
             this.falling = false;
         }
 
     } else if (this.attacking) {
         this.y = 155;
-        this.swordAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        if (this.movingOtherway) {
+            this.leftSwordAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y, true);
+            this.x = 550;
+        } else {
+            this.swordAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y, false);
+        }
         if (this.swordAnimation.isDone()) {
             this.swordAnimation.elapsedTime = 0;
             this.attacking = false;
             this.y = 200;
         }
+        if (this.leftSwordAnimation.isDone()) {
+            this.leftSwordAnimation.elapsedTime = 0;
+            this.attacking = false;
+            this.y = 200;
+        }
+
     } else if(this.entrance) {
         this.y = 175;
-        this.entranceAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.entranceAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y, false);
         if (this.entranceAnimation.isDone()) {
             this.entranceAnimation.elapsedTime = 0;
             this.entrance = false;
             this.y = 200;
         }
+    } else if (this.movingOtherway) {
+        this.leftAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y, false);
+
     } else if (!this.falling && !this.jumping) {
-        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+        this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y,false );
     }
     Entity.prototype.draw.call(this);
 }
